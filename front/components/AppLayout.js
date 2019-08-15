@@ -7,15 +7,8 @@ import PropTypes from 'prop-types';
 import LoginForm from './LoginForm';
 import UserProfile from './UserProfile';
 
-const dummy = {
-  isLoggedIn:true,
-  nickname:"장건일",
-  Posts:[],
-  Followings:[],
-  Followers:[]
-}
-
 const AppLayout = ({children}) => {
+ const {isLoggedIn, me} = useSelector(state=> state.user);
   return(
     <>
       <Head>
@@ -31,13 +24,13 @@ const AppLayout = ({children}) => {
         </Menu.Item>
       </Menu>
       <Row gutter={8}>
-        <Col md={6}>
-          {dummy.isLoggedIn ? <UserProfile /> : <LoginForm />}
+        <Col xs={24} md={6}>
+          {isLoggedIn ? <UserProfile /> : <LoginForm />}
         </Col>
-        <Col md={12}>
+        <Col xs={24} md={14}>
           {children}
         </Col>
-        <Col md={6}>
+        <Col xs={24} md={4}>
           <Link href="https://github.com/nomadGeonilJang"><a target="_blank">Made by Jang Geonil</a></Link>
         </Col>
       </Row>

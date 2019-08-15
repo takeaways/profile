@@ -1,5 +1,7 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {Form, Input, Button } from 'antd';
+import {useDispatch} from 'react-redux';
+import {addDummy} from '../reducers/post';
 
 const dummy = {
   isLoggedIn:true,
@@ -16,15 +18,19 @@ const dummy = {
 }
 
 const PostForm = () => {
+  const dispatch = useDispatch();
+  const onClick = useCallback(() => {
+    dispatch(addDummy);
+  },[]);
   return (
     <Form style={{padding:30}} encType="multipart/form-data">
      <Input.TextArea maxLength={140} placeholder="내용..."/>
      <div>
        <Input type="file" multiple hidden/>
        <Button>이미지 업로드</Button>
-       <Button type="primary" style={{float:'right'}} htmlType="submit">짹짹</Button>
+       <Button onClick={onClick} type="primary" style={{float:'right'}} htmlType="submit">짹짹</Button>
      </div>
-       {dummy.imagePaths.map((v,i)=>{
+       { dummy && dummy.imagePaths.map((v,i)=>{
          return(
            <div key={v} style={{display:'inline-block'}}>
              <img scr={`http://localhost:3065/${v}`} style={{width:'200px'}} alt={v}/>

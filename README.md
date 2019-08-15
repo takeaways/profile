@@ -1,8 +1,15 @@
 ## 리액트, 넥스트, 리덕스, 리덕스 사가, express를 이용한 프로젝트 입니다.
-## useCallback : props로 넘어 가는 함수는 감싸줘야 한다! 렌더링을 다시 하기 떄문에 의도 하지 않은 리렌더링 방지를 위해서
+## useCallback : props로 넘어 가는 함수는 감싸줘야 한다! 렌더링을 다시 하기 때문에 의도 하지 않은 리렌더링 방지를 위해서
 ## redux
 <pre>
 <code>
-  흩어져있는 state를 하나로 통합 관리 하기 위해서 사용! 굿
+  흩어져있는 state를 하나로 통합 관리 하기 위해서 사용
+  안정성, state 통제 용이
+
+  store ={state action reducer}
+  action -> state 를 바꾸는 행동
+  dispatch -> Action을 실행
+  reducer -> Action의 결과로 state를 어떻게 바꿀지
+
 </code>
 </pre>

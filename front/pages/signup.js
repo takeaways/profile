@@ -2,7 +2,9 @@ import React, {useState, useCallback, useEffect} from 'react';
 import {Form, Input, Checkbox, Button, Modal} from 'antd';
 import {useDispatch, useSelector} from 'react-redux';
 
+
 import Router from 'next/router';
+import {SIGN_UP} from '../reducers/user';
 
 //customeHook
 export const useInput = (initValue = null) => {
@@ -14,6 +16,8 @@ export const useInput = (initValue = null) => {
 }
 
 const Signup = () => {
+  const dispatch = useDispatch();
+
 
   //Modal
   const [visible, setVisible] = useState(false);
@@ -42,6 +46,14 @@ const Signup = () => {
     e.preventDefault();
     if(password !== passwordCheck) return setPasswordError(true);
     if(!term) return setTermError(true);
+    dispatch({
+      type:SIGN_UP,
+      data:{
+        id,nickname,password
+      }
+    })
+
+
   },[id, nickname, passwordCheck, password, term]);
 
   const onChangePasswordCheck = useCallback((e) => {
@@ -57,40 +69,40 @@ const Signup = () => {
     <>
       <Form onSubmit={onSubmit} style={{padding:40}}>
         <div>
-          <label htmlFor="user-id">ID</label>
+          <label htmlFor="user-id">아이디</label>
           <br/>
           <Input name="user-id" required value={id} onChange={onChangeId}/>
         </div>
         <div>
-          <label htmlFor="user-nickname">NICKNAME</label>
+          <label htmlFor="user-nickname">닉네임</label>
           <br/>
           <Input name="user-nickname" required value={nickname} onChange={onChangeNickname}/>
         </div>
         <div>
-          <label htmlFor="user-password">PASSWORD</label>
+          <label htmlFor="user-password">비밀번호</label>
           <br/>
           <Input name="user-password" type="password" required value={password} onChange={onChangePassword}/>
         </div>
         <div>
-          <label htmlFor="user-password-check">PASSWORD CHECK</label>
+          <label htmlFor="user-password-check">비밀번호 확인</label>
           <br/>
           <Input name="user-password-check" type="password" required value={passwordCheck} onChange={onChangePasswordCheck}/>
           {passwordError && <div style={{color:'red'}}>No matched password.</div>}
         </div>
         <div>
-          <Checkbox name="user-term" value={term} checked={term} onChange={onChangeTerm}></Checkbox> <a onClick={showModal}>Accept</a>
+          <Checkbox name="user-term" value={term} checked={term} onChange={onChangeTerm}></Checkbox> <a onClick={showModal}>동의하기</a>
           <Modal
-            title="Accept Modal"
+            title="사용자 동의"
             visible={visible}
             onOk={handleOk}
             onCancel={handleCancel}
           >
-            <p>동의합니다.</p>
+            <p>불법적인 용도의 개시글을 올리지 않을것을 동의합니다.</p>
           </Modal>
           {termError &&  <div style={{color:'red'}}>You should accept term.</div>}
         </div>
         <div style={{marginTop:10}}>
-          <Button type="primary" htmlType="submit" >Register</Button>
+          <Button type="primary" htmlType="submit" >회원가입</Button>
         </div>
       </Form>
     </>
