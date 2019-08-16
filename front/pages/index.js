@@ -8,8 +8,8 @@ import {LOG_IN, LOG_OUT} from '../reducers/user';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const {isLoggedIn } = useSelector(state => state.user);
-  const {mainPosts } = useSelector(state => state.post)
+  const {isLoggedIn} = useSelector(state => state.user);
+  const {mainPosts} = useSelector(state => state.post)
   return (
     <>
       {isLoggedIn && <PostForm/>}

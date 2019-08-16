@@ -11,5 +11,28 @@
   dispatch -> Action을 실행
   reducer -> Action의 결과로 state를 어떻게 바꿀지
 
+
+
+  connect(mapState)(Component)
+  const connect = (mapState) => (Component) => () =>{
+    return(
+        <Component props={mapState}/>
+      )
+  }
+
+  hoc(Component)
+  const hoc = (Component) => () => {
+    return <Component hello="I am users"/>
+  }
+</code>
+</pre>
+## redux-saga
+<pre>
+<code>
+  리덕스 사가의 필요성 : 비동기 처리에서 나온다!
+  리덕스 기능을 확장하기 위해 미들웨어!
+
+  제너레이터 문법을 사용합니다.
+  무한의 개념, 비동기 처리 할 때 많이 사용합니다.
 </code>
 </pre>

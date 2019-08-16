@@ -1,10 +1,8 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import {Form, Input, Checkbox, Button, Modal} from 'antd';
 import {useDispatch, useSelector} from 'react-redux';
-
-
 import Router from 'next/router';
-import {SIGN_UP} from '../reducers/user';
+import {SIGN_UP_REQUEST} from '../reducers/user';
 
 //customeHook
 export const useInput = (initValue = null) => {
@@ -17,8 +15,7 @@ export const useInput = (initValue = null) => {
 
 const Signup = () => {
   const dispatch = useDispatch();
-
-
+  const {isSigningUp, me} = useSelector(state => state.user);
   //Modal
   const [visible, setVisible] = useState(false);
   const showModal = useCallback(() => {
@@ -41,19 +38,21 @@ const Signup = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [termError, setTermError] = useState(false);
 
+  useEffect(()=>{
+    if(me) {
+      alert('로그인 되어있습니다.');
+      Router.push('/');
+    }
+  },[me && me.id]);
 
   const onSubmit = useCallback((e) => {
     e.preventDefault();
     if(password !== passwordCheck) return setPasswordError(true);
     if(!term) return setTermError(true);
     dispatch({
-      type:SIGN_UP,
-      data:{
-        id,nickname,password
-      }
+      type:SIGN_UP_REQUEST,
+      data:{id,nickname,password}
     })
-
-
   },[id, nickname, passwordCheck, password, term]);
 
   const onChangePasswordCheck = useCallback((e) => {
@@ -102,7 +101,7 @@ const Signup = () => {
           {termError &&  <div style={{color:'red'}}>You should accept term.</div>}
         </div>
         <div style={{marginTop:10}}>
-          <Button type="primary" htmlType="submit" >회원가입</Button>
+          <Button type="primary" htmlType="submit" loading={isSigningUp}>회원가입</Button>
         </div>
       </Form>
     </>
