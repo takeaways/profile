@@ -36,3 +36,13 @@
   무한의 개념, 비동기 처리 할 때 많이 사용합니다.
 </code>
 </pre>
+
+##back setting
+<pre>
+<code>
+  HTTP 요청 주소 체계
+  fron (요청) < ----- > back (응답)
+  수백가지의 종류가 너무 많기 떄문에 약소을 잘 정해서 사용
+  [ REST API >  GRAPH QL > soap.. ] 
+</code>
+</pre>
