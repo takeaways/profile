@@ -43,6 +43,38 @@
   HTTP 요청 주소 체계
   fron (요청) < ----- > back (응답)
   수백가지의 종류가 너무 많기 떄문에 약소을 잘 정해서 사용
-  [ REST API >  GRAPH QL > soap.. ] 
+  [ REST API >  GRAPH QL > soap.. ]
+</code>
+</pre>
+
+##Sequelize 사용하여 DB(mysql) + ERD
+<pre>
+<code>
+  npm i -g sequelize-cli
+  sequelize init < --- 동작하지 않을경우 환경변수에 node 모듈 경로 등록
+
+  [ERD]
+              [Hashtag]
+                 ||
+  [User] --->> [Post] --->> [Image]
+                 ||
+              [Comment]
+
+
+1) 다대다 관계는 중간에 테이블이 하나생기고, 서로간의 관계를정리 해주는 테이블이생긴다 {through 테이블의 이름을 적어준다}
+
+2)
+사용자 기준 as 이름으로 데이터를 가져오게 된다
+const user = {
+  id:1,
+  nickname:"jang geonil",
+  Liked:[{c1}, {c2}],
+  Followers:[{1},{2}]
+}
+
+3) 요청(req) header + body
+   응답(res)
+    (400~500)을 넣어주면 에러를 의히하며 (200)은 성공
+
 </code>
 </pre>
