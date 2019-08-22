@@ -1,4 +1,5 @@
-import {all,fork, put,takeLatest,delay} from 'redux-saga/effects';
+import {all,call,fork, put,takeLatest,delay} from 'redux-saga/effects';
+import axios from 'axios';
 import {
   EDIT_NICKNAME_FAILURE, EDIT_NICKNAME_REQUEST,
   EDIT_NICKNAME_SUCCESS,
@@ -27,14 +28,20 @@ import {
   UNFOLLOW_USER_SUCCESS,
 } from '../reducers/user';
 
-function loginAPI(){
+
+
+function loginAPI(loginData){
   //request to server
+  return axios.post('/user/login', loginData, {
+    withCredentials:true,
+  })
 }
-function* login(data){
+function* login(action){
   try {
-    yield delay(2000);
+    const result = yield call(loginAPI, action.data)
     yield put({
-      type:LOG_IN_SUCCESS
+      type:LOG_IN_SUCCESS,
+      data:result.data
     });
   } catch (e) {
     console.error(e);
@@ -48,12 +55,12 @@ function* watchLogin(){
   yield takeLatest(LOG_IN_REQUEST, login);
 }
 
-function signUpAPI(){
-  //request to server
+function signUpAPI(signUpData){
+  return axios.post('/user/', signUpData);
 }
-function* signUp(data){
+function* signUp(action){
   try {
-    yield delay(2000);
+    yield call(signUpAPI, action.data)
     yield put({
       type:SIGN_UP_SUCCESS
     });
@@ -71,9 +78,13 @@ function* watchSignUp(){
 
 function logOutAPI(){
   //request to server
+  return axios.post('/user/logout', {}, {
+    withCredentials:true,
+  });
 }
 function* logOut(data){
   try {
+    yield call(logOutAPI);
     yield put({
       type:LOG_OUT_SUCCESS
     });
@@ -90,11 +101,38 @@ function* watchLogOut(){
 }
 
 
+function loadUserAPI(){
+  //request to server
+  return axios.get('/user/', {
+    withCredentials:true,
+  });
+}
+function* loadUser(){
+  try {
+    const result = yield call(loadUserAPI);
+    yield put({
+      type:LOAD_USER_SUCCESS,
+      data:result.data
+    });
+  } catch (e) {
+    console.error(e);
+    yield put({
+      type:LOAD_USER_FAILURE,
+      error:e
+    })
+  }
+}
+function* watchLoadUser(){
+  yield takeLatest(LOAD_USER_REQUEST, loadUser);
+}
+
+
 
 export default function* userSaga(){
   yield all([
     fork(watchLogin),
     fork(watchSignUp),
     fork(watchLogOut),
+    fork(watchLoadUser),
   ])
 }

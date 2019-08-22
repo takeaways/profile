@@ -39,11 +39,11 @@ const Signup = () => {
   const [termError, setTermError] = useState(false);
 
   useEffect(()=>{
-    if(me) {
+    if(me.nickname !== "") {
       alert('로그인 되어있습니다.');
       Router.push('/');
     }
-  },[me && me.id]);
+  },[me && me.id !== undefined]);
 
   const onSubmit = useCallback((e) => {
     e.preventDefault();
@@ -51,7 +51,7 @@ const Signup = () => {
     if(!term) return setTermError(true);
     dispatch({
       type:SIGN_UP_REQUEST,
-      data:{id,nickname,password}
+      data:{userId:id,nickname,password}
     })
   },[id, nickname, passwordCheck, password, term]);
 

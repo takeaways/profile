@@ -10,12 +10,7 @@ export const initialState = {
   followingList:[],
   followerList:[],
   userInfo:null, //남의 정보
-  me:{
-    nickname:'',
-    Posts:[],
-    Followings:[],
-    Followers:[],
-  },
+  me:null,
 };
 
 
@@ -87,15 +82,13 @@ const reducer = (state = initialState, action) => {
     case LOG_IN_SUCCESS:{
       return{
         ...state,
-        isLoggedIn:true,
-        me:dummy,
+        me:action.data,
         isLoggingIn:false,
       }
     }
     case LOG_IN_FAILURE:{
       return{
         ...state,
-        isLoggedIn:false,
         me:{},
         isLoggingIn:false,
         logInErrorReason:action.error
@@ -104,18 +97,20 @@ const reducer = (state = initialState, action) => {
     case LOG_OUT_REQUEST:{
       return{
         ...state,
+        isLoggingOut:true,
       }
     }
     case LOG_OUT_SUCCESS:{
       return{
         ...state,
-        isLoggedIn:false,
-        me:{}
+        isLoggingOut:false,
+        me:null
       }
     }
     case LOG_OUT_FAILURE:{
       return{
         ...state,
+        isLoggingOut:false,
       }
     }
     case SIGN_UP_REQUEST:{
@@ -137,6 +132,22 @@ const reducer = (state = initialState, action) => {
         isSigningUp:false,
         signedUp:false,
         signUpErrorReason:action.error
+      }
+    }
+    case LOAD_USER_REQUEST:{
+      return{
+        ...state,
+      }
+    }
+    case LOAD_USER_SUCCESS:{
+      return{
+        ...state,
+        me:action.data,
+      }
+    }
+    case LOAD_USER_FAILURE:{
+      return{
+        ...state,
       }
     }
     default:{

@@ -22,20 +22,23 @@ const dummy = {
 const PostForm = () => {
   const dispatch = useDispatch();
   const {isAddingPost, imagePaths, postAdded} = useSelector(state=>state.post);
-  const onSubmit = useCallback((e) => {
-    e.preventDefault();
-    dispatch({
-      type:ADD_POST_REQUEST,
-      data:dummy.mainPosts[0]
-    });
-  },[]);
-
 
 
   const [text, setText] = useState('');
-  const onChangeText = (e)=>{
+  const onChangeText = useCallback((e)=>{
     setText(e.target.value);
-  }
+  },[])
+
+  const onSubmit = useCallback((e) => {
+    e.preventDefault();
+    if(!text || !text.trim()){
+      return alert('게시글을 작성하세요.')
+    }
+    dispatch({
+      type:ADD_POST_REQUEST,
+      data:{content:text.trim()}
+    });
+  },[text]);
 
   useEffect(()=>{
     setText('');

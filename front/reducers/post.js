@@ -80,13 +80,19 @@ const dummyComment = {
 
  const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_DUMMY:{
+    case LOAD_MAIN_POSTS_REQUEST:{
       return{
         ...state,
-        mainPosts:[action.data, ...state.mainPosts]
+        mainPosts:[],
       }
     }
-    case ADD_POST:{
+    case LOAD_MAIN_POSTS_SUCCESS:{
+      return{
+        ...state,
+        mainPosts:action.data
+      }
+    }
+    case LOAD_MAIN_POSTS_FAILURE:{
       return{
         ...state,
       }

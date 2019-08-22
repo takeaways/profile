@@ -76,5 +76,18 @@ const user = {
    응답(res)
     (400~500)을 넣어주면 에러를 의히하며 (200)은 성공
 
+4) 로그인을 하면 정보를 서버와 프론트에 남겨야한다!
+   1) 인증받기 - 쿠키로 받는다.  = 쿠키와 세션설정
+
+   const hoc = (fn) => (name) => {
+  	fn(name);
+  	console.log("이렇게 기존의 함수를 확장합니다")
+    }
+    undefined
+    hoc((p)=>{console.log(p)})("홍길동");
+    VM31664:1 홍길동
+    VM31493:3 이렇게 기존의 함수를 확장합니다
+    undefined
+
 </code>
 </pre>
