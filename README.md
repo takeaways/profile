@@ -89,5 +89,30 @@ const user = {
     VM31493:3 이렇게 기존의 함수를 확장합니다
     undefined
 
+  5)getInitialProps 서버와 프론트에서 가장먼저실행!!
+  ex) app.js가 실행되면 붙어있는 getInitialProps가 실행되는데 거기서
+  컴포넌트를 전달 받고 해당 컴포넌트에 붙어있는 getInitialProps의 실행 결과를 리턴 받는다... 음.. 보면 ctx는 항살 전달 하고 있는 부분이기는 하나 각 페이지에서 어떤 값으로 전달 받는 지를 확인한후 리터 받은 값으로 컴포넌트의 프롭스로 넘겨야 원하는 값을 사용할수 있기 때문에다.
+
+  hashtag -> tag,
+  user -> id를 밭을 수있지만 app에서 받으면 뭔지 ,,처리 귀찮기때문에
+  음
+  그래서 아래 둘다 가능한 부분인데...
+  // if(ctx.query){
+  //   pageProps = ctx.query
+  // }
+  if(Component.getInitialProps){
+    pageProps = await Component.getInitialProps(ctx);
+  }
+
+</code>
+</pre>
+
+
+###서버 사이드 렌더링 적용하기
+<pre>
+<code>
+ 1) 봇이 잘 데이터를 긁어 갈 수 있도록 SPA 구성을 만들어 보자용
+
+ 
 </code>
 </pre>

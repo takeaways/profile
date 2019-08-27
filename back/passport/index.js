@@ -4,11 +4,12 @@ const local = require('./local');
 module.exports = () =>{
   passport.serializeUser((user, done)=>{
     //서버쪽에 [{id:3, cookie:'asdad'}]; 로 저장하는 역할
-    //cookie는 프론트로
+    //cookie는 프론트로 -> 여기서 user.id링  - 쿠키랑 연결
     return done(null, user.id)
   });
 
   //프론트에서 쿠키를 넘기면  id 를 받는다! 시리얼라이즈가 아이디를 알고 있기 때문에 사용가능
+  //시리얼 라이즈로 만들어진 쿠키를 매번 확인하면서 있으면 실행
   passport.deserializeUser( async (id, done)=>{
     try {
       const user = await db.User.findOne({
@@ -27,6 +28,7 @@ module.exports = () =>{
         }],
         attributes:['id','nickname','userId']
       });
+      console.log(user)
       return done(null, user); //req.user에 저장됩니다.
     } catch (e) {
       console.error(e);

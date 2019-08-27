@@ -15,7 +15,7 @@ export const useInput = (initValue = null) => {
 
 const Signup = () => {
   const dispatch = useDispatch();
-  const {isSigningUp, me} = useSelector(state => state.user);
+  const {isSigningUp, me, signedUp} = useSelector(state => state.user);
   //Modal
   const [visible, setVisible] = useState(false);
   const showModal = useCallback(() => {
@@ -39,11 +39,15 @@ const Signup = () => {
   const [termError, setTermError] = useState(false);
 
   useEffect(()=>{
-    if(me.nickname !== "") {
+    if(me) {
       alert('로그인 되어있습니다.');
       Router.push('/');
     }
-  },[me && me.id !== undefined]);
+    if(signedUp){
+      alert('회원 가입에 성공했습니다.');
+      Router.push('/');
+    }
+  },[me && me.id !== undefined, signedUp]);
 
   const onSubmit = useCallback((e) => {
     e.preventDefault();
@@ -63,6 +67,10 @@ const Signup = () => {
     setTermError(false);
     setTerm(e.target.checked);
   },[]);
+
+  if(me){
+   return null
+  }
 
   return (
     <>

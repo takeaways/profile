@@ -30,12 +30,14 @@ app.prepare().then(() => {
     },
   }));
 
+
+  //동적인 값 전달
   server.get('/hashtag/:tag', (req, res) => {
     return app.render(req, res, '/hashtag', { tag: req.params.tag });
   });
 
   server.get('/user/:id', (req, res) => {
-    return app.render(req, res, '/user', { id: req.params.id });
+    return app.render(req, res, `/user`, { id: req.params.id });
   });
 
 

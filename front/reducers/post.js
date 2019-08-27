@@ -7,6 +7,8 @@ export const initialState = {
   isAddingComment: false,
   addCommentErrorReason: '',
   commentAdded: false,
+  retweeted:false,
+  hasMorePost:false
 }
 
 export const ADD_POST = "ADD_POST";
@@ -59,39 +61,28 @@ export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
 export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
 
 
-const dummyPost = {
-  User:{
-    id:1,
-    nickname:"장건일",
-  },
-  content:"반갑소 더미요",
-  Comments:[]
-}
-
-const dummyComment = {
-  id:1,
-  User:{
-    id:1,
-    nickname:"홍길동"
-  },
-  createAt:"2019-08-19",
-  content:"더미 댓글 입니다."
-}
-
  const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case LOAD_HASHTAG_POSTS_REQUEST:
+    case LOAD_USER_POSTS_REQUEST:
     case LOAD_MAIN_POSTS_REQUEST:{
       return{
         ...state,
-        mainPosts:[],
+        mainPosts:action.lastId === 0 ? [] : state.mainPosts,
+        hasMorePost:action.lastId ? state.hasMorePost : true
       }
     }
+    case LOAD_HASHTAG_POSTS_SUCCESS:
+    case LOAD_USER_POSTS_SUCCESS:
     case LOAD_MAIN_POSTS_SUCCESS:{
       return{
         ...state,
-        mainPosts:action.data
+        mainPosts:[...state.mainPosts, ...action.data],
+        hasMorePost: action.data.length === 10,
       }
     }
+    case LOAD_HASHTAG_POSTS_FAILURE:
+    case LOAD_USER_POSTS_FAILURE:
     case LOAD_MAIN_POSTS_FAILURE:{
       return{
         ...state,
@@ -108,7 +99,8 @@ const dummyComment = {
         ...state,
         isAddingPost:false,
         postAdded:true,
-        mainPosts:[action.data, ...state.mainPosts]
+        mainPosts:[action.data, ...state.mainPosts],
+        imagePaths:[]
       }
     }
     case ADD_POST_FAILURE:{
@@ -121,6 +113,7 @@ const dummyComment = {
     case ADD_COMMENT_REQUEST:{
       return{
         ...state,
+        commentAdded:false,
         isAddingComment:true,
         addCommentErrorReason:''
       }
@@ -128,7 +121,7 @@ const dummyComment = {
     case ADD_COMMENT_SUCCESS:{
       const postIndex = state.mainPosts.findIndex(v=> v.id === action.data.postId);
       const post = state.mainPosts[postIndex];
-      const Comments = [...post.Comments, dummyComment];
+      const Comments = [...post.Comments, action.data.comment];
       const mainPosts = [...state.mainPosts];
       mainPosts[postIndex] = {...post, Comments};
       return{
@@ -143,6 +136,128 @@ const dummyComment = {
         ...state,
         isAddingComment:false,
         addCommentErrorReason:action.error
+      }
+    }
+    case LOAD_COMMENTS_REQUEST:{
+      return{
+        ...state,
+      }
+    }
+    case LOAD_COMMENTS_SUCCESS:{
+      const postIndex = state.mainPosts.findIndex(v=> v.id === action.data.postId);
+      const post = state.mainPosts[postIndex];
+      const Comments = action.data.comment;
+      const mainPosts = [...state.mainPosts];
+      mainPosts[postIndex] = {...post, Comments};
+      return{
+        ...state,
+        mainPosts,
+      }
+    }
+    case LOAD_COMMENTS_FAILURE:{
+      return{
+        ...state,
+        isAddingComment:false,
+        addCommentErrorReason:action.error
+      }
+    }
+    case UPLOAD_IMAGES_REQUEST:{
+      return{
+        ...state,
+      }
+    }
+    case UPLOAD_IMAGES_SUCCESS:{
+      console.log(action.data);
+      return{
+        ...state,
+        imagePaths:[...state.imagePaths, ...action.data]
+      }
+    }
+    case UPLOAD_IMAGES_FAILURE:{
+      return{
+        ...state,
+      }
+    }
+    case REMOVE_IMAGE:{
+      return{
+        ...state,
+        imagePaths:state.imagePaths.filter((v,i)=> i !== action.index)
+      }
+    }
+    case LIKE_POST_REQUEST:{
+      return{
+        ...state,
+      }
+    }
+    case LIKE_POST_SUCCESS:{
+      const postIndex = state.mainPosts.findIndex(v=> v.id === action.data.postId)
+      const post = state.mainPosts[postIndex];
+      const Likers = [{id:action.data.userId}, ...post.Likers];
+      const mainPosts = [...state.mainPosts];
+      mainPosts[postIndex] = {...post, Likers};
+      return{
+        ...state,
+        mainPosts,
+      }
+    }
+    case LIKE_POST_FAILURE:{
+      return{
+        ...state,
+      }
+    }
+    case UNLIKE_POST_REQUEST:{
+      return{
+        ...state,
+      }
+    }
+    case UNLIKE_POST_SUCCESS:{
+      const postIndex = state.mainPosts.findIndex(v=> v.id === action.data.postId)
+      const post = state.mainPosts[postIndex];
+      const Likers = post.Likers.filter(v=>v.id !== action.data.userId);
+      const mainPosts = [...state.mainPosts];
+      mainPosts[postIndex] = {...post, Likers};
+      return{
+        ...state,
+        mainPosts,
+      }
+    }
+    case UNLIKE_POST_FAILURE:{
+      return{
+        ...state,
+      }
+    }
+    case RETWEET_REQUEST:{
+      return{
+        ...state,
+        retweeted:false,
+      }
+    }
+    case RETWEET_SUCCESS:{
+      return{
+        ...state,
+        mainPosts:[action.data, ...state.mainPosts],
+        retweeted:true,
+      }
+    }
+    case RETWEET_FAILURE:{
+      return{
+        ...state,
+      }
+    }
+    case REMOVE_POST_REQUEST:{
+      return{
+        ...state,
+      }
+    }
+    case REMOVE_POST_SUCCESS:{
+      return{
+        ...state,
+        mainPosts:state.mainPosts.filter(v=>v.id !== action.data),
+      }
+    }
+    case REMOVE_POST_FAILURE:{
+      return{
+        ...state,
       }
     }
     default:{

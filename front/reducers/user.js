@@ -11,22 +11,12 @@ export const initialState = {
   followerList:[],
   userInfo:null, //남의 정보
   me:null,
+  isEditingNickname:false,
+  editNicknameErrorReason:'',
+  hasMoreFollower:false,
+  hasMoreFollowing:false,
 };
 
-
-const dummy = {
-  id:1,
-  isLoggedIn:true,
-  nickname:"장건일",
-  Posts:[1,2,3],
-  Followings:[1,2,4,5],
-  Followers:[2],
-  signUpData:{
-    id:'',
-    password:'',
-    nickname:''
-  },
-}
 
 export const SIGN_UP_REQUEST = 'SIGN_UP_REQUEST';
 export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
@@ -39,6 +29,10 @@ export const LOG_IN_FAILURE = 'LOG_IN_FAILURE'; // 액션의 이름
 export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
 export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
 export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE';
+
+export const LOAD_USER_REQUEST_ME = 'LOAD_USER_REQUEST_ME';
+export const LOAD_USER_SUCCESS_ME = 'LOAD_USER_SUCCESS_ME';
+export const LOAD_USER_FAILURE_ME = 'LOAD_USER_FAILURE_ME';
 
 export const LOG_OUT_REQUEST = 'LOG_OUT_REQUEST';
 export const LOG_OUT_SUCCESS = 'LOG_OUT_SUCCESS';
@@ -69,7 +63,7 @@ export const EDIT_NICKNAME_SUCCESS = 'EDIT_NICKNAME_SUCCESS';
 export const EDIT_NICKNAME_FAILURE = 'EDIT_NICKNAME_FAILURE';
 
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
-
+export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -117,6 +111,7 @@ const reducer = (state = initialState, action) => {
       return{
         ...state,
         isSigningUp:true,
+        signedUp:false,
       }
     }
     case SIGN_UP_SUCCESS:{
@@ -134,6 +129,22 @@ const reducer = (state = initialState, action) => {
         signUpErrorReason:action.error
       }
     }
+    case LOAD_USER_REQUEST_ME:{
+      return{
+        ...state,
+      }
+    }
+    case LOAD_USER_SUCCESS_ME:{
+        return{
+          ...state,
+          me:action.data,
+        }
+    }
+    case LOAD_USER_FAILURE_ME:{
+      return{
+        ...state,
+      }
+    }
     case LOAD_USER_REQUEST:{
       return{
         ...state,
@@ -142,12 +153,149 @@ const reducer = (state = initialState, action) => {
     case LOAD_USER_SUCCESS:{
       return{
         ...state,
-        me:action.data,
+        userInfo:action.data
       }
     }
     case LOAD_USER_FAILURE:{
       return{
         ...state,
+      }
+    }
+    case FOLLOW_USER_REQUEST:{
+      return{
+        ...state,
+      }
+    }
+    case FOLLOW_USER_SUCCESS:{
+      return{
+        ...state,
+        me:{
+          ...state.me,
+          Followings:[{id:action.data}, ...state.me.Followings]
+        }
+      }
+    }
+    case FOLLOW_USER_FAILURE:{
+      return{
+        ...state,
+      }
+    }
+    case UNFOLLOW_USER_REQUEST:{
+      return{
+        ...state,
+      }
+    }
+    case UNFOLLOW_USER_SUCCESS:{
+      return{
+        ...state,
+        me:{
+          ...state.me,
+          Followings:state.me.Followings.filter(u => u.id !== action.data)
+        },
+        followingList:state.followingList.filter(u=> u.id !== action.data)
+      }
+    }
+    case UNFOLLOW_USER_FAILURE:{
+      return{
+        ...state,
+      }
+    }
+    case ADD_POST_TO_ME:{
+      return{
+        ...state,
+        me:{
+          ...state.me,
+          Posts:[{id:action.data}, ...state.me.Posts]
+        }
+      }
+    }
+    case REMOVE_POST_OF_ME:{
+      return{
+        ...state,
+        me:{
+          ...state.me,
+          Posts:state.me.Posts.filter(v => v.id !== action.data)
+        }
+      }
+    }
+    case LOAD_FOLLOWERS_REQUEST:{
+      return{
+        ...state,
+        hasMoreFollower:action.offset ? state.hasMoreFollower : true,
+      }
+    }
+    case LOAD_FOLLOWERS_SUCCESS:{
+      return{
+        ...state,
+        followerList: action.offset === 0 ? action.data :[...state.followerList,...action.data],
+        hasMoreFollower : action.data.length === 3,
+      }
+    }
+    case LOAD_FOLLOWERS_FAILURE:{
+      return{
+        ...state,
+      }
+    }
+    case LOAD_FOLLOWINGS_REQUEST:{
+      return{
+        ...state,
+        hasMoreFollowing:action.offset ? state.hasMoreFollowing : true,
+      }
+    }
+    case LOAD_FOLLOWINGS_SUCCESS:{
+      return{
+        ...state,
+        followingList:action.offset === 0 ? action.data :[...state.followingList,...action.data],
+        hasMoreFollowing : action.data.length === 3,
+      }
+    }
+    case LOAD_FOLLOWINGS_FAILURE:{
+      return{
+        ...state,
+      }
+    }
+    case REMOVE_FOLLOWER_REQUEST:{
+      return{
+        ...state,
+      }
+    }
+    case REMOVE_FOLLOWER_SUCCESS:{
+      return{
+        ...state,
+        me:{
+          ...state.me,
+          Followers:state.me.Followers.filter(v=>v.id !== action.data)
+        },
+        followerList:state.followerList.filter(v=>v.id !==action.data)
+      }
+    }
+    case REMOVE_FOLLOWER_FAILURE:{
+      return{
+        ...state,
+      }
+    }
+    case EDIT_NICKNAME_REQUEST:{
+      return{
+        ...state,
+        isEditingNickname:true,
+        editNicknameErrorReason:''
+      }
+    }
+    case EDIT_NICKNAME_SUCCESS:{
+      return{
+        ...state,
+        isEditingNickname:false,
+        me:{
+          ...state.me,
+          nickname:action.data,
+        }
+      }
+    }
+    case EDIT_NICKNAME_FAILURE:{
+      return{
+        ...state,
+        isEditingNickname:false,
+        editNicknameErrorReason:action.error
       }
     }
     default:{

@@ -1,23 +1,7 @@
-import React, {useCallback, useEffect,useState} from 'react';
+import React, {useCallback, useEffect,useState, useRef} from 'react';
 import {Form, Input, Button } from 'antd';
 import {useDispatch, useSelector} from 'react-redux';
-import {addDummy, ADD_POST_REQUEST} from '../reducers/post';
-
-const dummy = {
-  isLoggedIn:true,
-  imagePaths:[],
-  mainPosts:[{
-    id:1,
-    createAt:"2019-08-15",
-    img:"http://www.earlyadopter.co.kr/wp-content/uploads/2017/06/line_friends_02.jpg",
-    User:{
-      id:1,
-      nickname:"장건일",
-    },
-    content:"반가워요~",
-    Comments:[]
-  }]
-}
+import {ADD_POST_REQUEST, UPLOAD_IMAGES_REQUEST, REMOVE_IMAGE} from '../reducers/post';
 
 const PostForm = () => {
   const dispatch = useDispatch();
@@ -34,29 +18,64 @@ const PostForm = () => {
     if(!text || !text.trim()){
       return alert('게시글을 작성하세요.')
     }
+    const formData = new FormData();
+    imagePaths.forEach((i)=>{
+      formData.append('image',i);
+    });
+    formData.append('content',text)
     dispatch({
       type:ADD_POST_REQUEST,
-      data:{content:text.trim()}
+      data:formData
     });
-  },[text]);
+  },[text, imagePaths]);
 
   useEffect(()=>{
-    setText('');
-  },[postAdded === true]);
+    if(postAdded)setText('');
+  },[postAdded === true ]);
+
+
+
+//이미지 업로드 처리
+  const imageInput = useRef(null);
+  const onClickImageUpload = useCallback(() => {
+   imageInput.current.click();
+  },[]);
+  const onChangeImages= useCallback((e) => {
+    /*e.target.files.foeEach(f=>imageFormData.append(f))*/
+    const imageFormData = new FormData();
+    [].forEach.call(e.target.files, f => {
+      imageFormData.append('image', f);
+    },[]);
+    dispatch({
+      type:UPLOAD_IMAGES_REQUEST,
+      data:imageFormData
+    });
+
+  },[]);
+
+  const onRemoveImage = useCallback((index) => () => {
+    dispatch({
+      type:REMOVE_IMAGE,
+      index
+    });
+  },[]);
+
+
+
 
   return (
     <Form onSubmit={onSubmit} style={{padding:30}} encType="multipart/form-data">
      <Input.TextArea maxLength={140} value={text} onChange={onChangeText} placeholder="내용..."/>
      <div>
-       <Input type="file" multiple hidden/>
-       <Button>이미지 업로드</Button>
+       <input type="file" multiple hidden ref={imageInput} onChange={onChangeImages} />
+       <Button onClick={onClickImageUpload}>이미지 업로드</Button>
        <Button type="primary" style={{float:'right'}} htmlType="submit" loading={isAddingPost}>짹짹</Button>
      </div>
        { imagePaths.map((v,i)=>{
          return(
            <div key={v} style={{display:'inline-block'}}>
-             <img scr={`http://localhost:3065/${v}`} style={{width:'200px'}} alt={v}/>
-             <Button>제거</Button>
+             <img src={`http://localhost:3065/${encodeURIComponent(v)}`} style={{width:'200px'}} alt={v}/>
+             <Button onClick={onRemoveImage(i)}>제거</Button>
            </div>
          )
        })}
