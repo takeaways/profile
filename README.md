@@ -127,3 +127,17 @@ const user = {
 </pre>
 
 ### tree shaking
+
+### aws 설정
+<pre>
+<code>
+1) apt-get update
+2) apt-get install -y build-essential
+3) curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash --
+4) apt-get install -y nodejs
++5) apt-get install -y mysql-server
++6) mysql_secure_installation
++7) mysql -uroot -p
+8) git clone
+</code>
+</pre>
