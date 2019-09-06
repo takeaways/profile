@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const expressSession = require('express-session');
 const dotenv = require('dotenv');
+const path = require('path')
 dotenv.config();
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -15,7 +16,7 @@ const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
   const server = express();
-
+  server.use('/', express.static(path.join(__dirname,'public')))
   server.use(morgan('dev'));
   server.use(express.json());
   server.use(express.urlencoded({ extended: true }));
@@ -40,6 +41,9 @@ app.prepare().then(() => {
     return app.render(req, res, `/user`, { id: req.params.id });
   });
 
+  server.get('/post/:id', (req, res) => {
+    return app.render(req, res, `/post`, { id: req.params.id });
+  });
 
   server.get('*', (req, res) => {
     //get 요청 처리기

@@ -8,7 +8,8 @@ export const initialState = {
   addCommentErrorReason: '',
   commentAdded: false,
   retweeted:false,
-  hasMorePost:false
+  hasMorePost:false,
+  singlePost:null,
 }
 
 export const ADD_POST = "ADD_POST";
@@ -21,6 +22,12 @@ export const LOAD_MAIN_POSTS_FAILURE = 'LOAD_MAIN_POSTS_FAILURE';
 export const LOAD_HASHTAG_POSTS_REQUEST = 'LOAD_HASHTAG_POSTS_REQUEST';
 export const LOAD_HASHTAG_POSTS_SUCCESS = 'LOAD_HASHTAG_POSTS_SUCCESS';
 export const LOAD_HASHTAG_POSTS_FAILURE = 'LOAD_HASHTAG_POSTS_FAILURE';
+
+
+export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
+export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
+export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
+
 
 export const LOAD_USER_POSTS_REQUEST = 'LOAD_USER_POSTS_REQUEST';
 export const LOAD_USER_POSTS_SUCCESS = 'LOAD_USER_POSTS_SUCCESS';
@@ -68,7 +75,7 @@ export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
     case LOAD_MAIN_POSTS_REQUEST:{
       return{
         ...state,
-        mainPosts:action.lastId === 0 ? [] : state.mainPosts,
+        mainPosts:!action.lastId ? [] : state.mainPosts,
         hasMorePost:action.lastId ? state.hasMorePost : true
       }
     }
@@ -256,6 +263,22 @@ export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
       }
     }
     case REMOVE_POST_FAILURE:{
+      return{
+        ...state,
+      }
+    }
+    case LOAD_POST_REQUEST:{
+      return{
+        ...state,
+      }
+    }
+    case LOAD_POST_SUCCESS:{
+      return{
+        ...state,
+        singlePost:action.data,
+      }
+    }
+    case LOAD_POST_FAILURE:{
       return{
         ...state,
       }

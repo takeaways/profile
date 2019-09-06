@@ -1,8 +1,10 @@
-import React,{useState, useEffect, useCallback} from 'react';
+import React,{useState, useEffect, useCallback, memo} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import Link from 'next/link'
 import {Card, Icon, Button, Avatar, Form, List, Input, Comment, Popover } from 'antd';
 import PropTypes from 'prop-types';
+import moment from 'moment';
+moment.locale('ko');
 import {
    LOAD_MAIN_POSTS_REQUEST,
    ADD_COMMENT_REQUEST,
@@ -19,12 +21,18 @@ import {
 import PostImages from './PostImages';
 import CommentForm from './CommentForm'
 import PostCardContent from './PostCardContent'
+import FollowButton from './FollowButton';
+
+import styled from 'styled-components';
+const CardWraper = styled.div`
+  marginBottom:15px;
+`
 
 //mainPosts 값 전달 index 에서
-const PostCard = ({post}) => {
+const PostCard = memo(({post}) => {
   const dispatch = useDispatch();
   const {retweeted} = useSelector(state=>state.post);
-  const {me} = useSelector(state=>state.user);
+  const id = useSelector(state=>state.user.me && state.user.me.id);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
 
   const onToggleComment = useCallback(() =>{
@@ -38,9 +46,9 @@ const PostCard = ({post}) => {
   },[post]);
 
 
-  const liked = me && post.Likers && post.Likers.find(v=> v.id === me.id);
+  const liked = id && post.Likers && post.Likers.find(v=> v.id === id);
   const onToggleLike = useCallback((e) => {
-    if(!me) return alert('로그인이 필요합니다.');
+    if(!id) return alert('로그인이 필요합니다.');
     if(liked){
       dispatch({
         type:UNLIKE_POST_REQUEST,
@@ -52,15 +60,15 @@ const PostCard = ({post}) => {
         data:post.id,
       })
     }
-  },[me && me.id, post && post.id, liked]);
+  },[id, post && post.id, liked]);
 
   const onRetweet = useCallback(e=>{
-    if(!me) return alert('로그인이 필요합니다.');
+    if(!id) return alert('로그인이 필요합니다.');
     dispatch({
       type:RETWEET_REQUEST,
       data:post.id
     });
-  },[me && me.id, post && post.id]);
+  },[id, post && post.id]);
 
   const onUnfollow = useCallback((userId) => () =>{
     dispatch({
@@ -84,9 +92,8 @@ const PostCard = ({post}) => {
 
 
   return(
-    <div style={{margin:"15px"}}>
+    <CardWraper style={{margin:"15px"}}>
       <Card
-       key={+post.createAt}
        cover={post.Images && <PostImages images={post.Images}/>}
        actions={[
          <Icon onClick={onRetweet} type="retweet" key="retweet"/>,
@@ -96,7 +103,7 @@ const PostCard = ({post}) => {
           key="ellipsis"
           content={(
             <Button.Group>
-              {me && post.UserId === me.id
+              {id && post.UserId === id
                 ? (<>
                     <Button>수정</Button>
                     <Button onClick={onDelete(post.id)} type="danger">삭제</Button>
@@ -110,12 +117,7 @@ const PostCard = ({post}) => {
          </Popover>
        ]}
        title={post.RetweetId ? `${post.User.nickname}님이 리트윗 하셨습니다.` : null}
-       extra={!me || post.User.id === me.id
-         ? null
-         : me.Followings && me.Followings.find( v => v.id ===post.User.id)
-           ? <Button onClick={onUnfollow(post.User.id)}>팔로취소</Button>
-           : <Button onClick={onFollow(post.User.id)}>팔로우</Button>
-       }
+       extra={<FollowButton post={post} onUnfollow={onUnfollow} onFollow={onFollow}/>}
       >
       {post.RetweetId && post.Retweet ? (
         <Card
@@ -133,6 +135,7 @@ const PostCard = ({post}) => {
             title={post.Retweet.User.nickname}
             description={<PostCardContent postData={post.Retweet} />}
           />
+          {moment(post.createAt).format('YYYY.MM.DD')}
         </Card>
         )
        :(
@@ -176,9 +179,9 @@ const PostCard = ({post}) => {
           />
         </>
       )}
-    </div>
+    </CardWraper>
   )
-}
+});
 
 PostCard.propTypes = {
   post: PropTypes.shape({

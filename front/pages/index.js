@@ -1,4 +1,4 @@
-import React,{useEffect, useCallback} from 'react';
+import React,{useEffect, useCallback, useRef} from 'react';
 import {Form, Input, Button, Icon, Avatar, Card} from 'antd';
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
@@ -11,14 +11,18 @@ const Home = () => {
   const dispatch = useDispatch();
   const {me} = useSelector(state => state.user);
   const {mainPosts, hasMorePost} = useSelector(state => state.post);
-
+  const countRef = useRef([]);
   const onScroll = useCallback(() => {
     if(hasMorePost){
       if(window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300){
-        dispatch({
-          type:LOAD_MAIN_POSTS_REQUEST,
-          lastId:mainPosts[mainPosts.length - 1].id,
-        })
+        const lastId = mainPosts[mainPosts.length - 1].id;
+        if(!countRef.current.includes(lastId)){
+          dispatch({
+            type:LOAD_MAIN_POSTS_REQUEST,
+            lastId
+          });
+          countRef.current.push(lastId)
+        }
       }
     }
   },[mainPosts.length, hasMorePost]);

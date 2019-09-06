@@ -113,6 +113,17 @@ const user = {
 <code>
  1) 봇이 잘 데이터를 긁어 갈 수 있도록 SPA 구성을 만들어 보자용
 
- 
+
 </code>
 </pre>
+
+### 폴더구조
+<pre>
+<code>
+  1) dispath를 하는 컴포넌트와 사용하지 않는 컴포넌트를 구별해요
+    음..
+    container folder => using dispatch
+</code>
+</pre>
+
+### tree shaking

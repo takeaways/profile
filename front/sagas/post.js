@@ -1,6 +1,7 @@
 import {all,call,put,takeLatest,delay,fork, throttle} from 'redux-saga/effects';
 import axios from 'axios';
 import {
+  LOAD_POST_REQUEST,LOAD_POST_SUCCESS,LOAD_POST_FAILURE,
   ADD_POST_FAILURE,ADD_POST_REQUEST,ADD_POST_SUCCESS,
   ADD_COMMENT_FAILURE,ADD_COMMENT_REQUEST,ADD_COMMENT_SUCCESS,
   LIKE_POST_FAILURE,LIKE_POST_REQUEST,LIKE_POST_SUCCESS,
@@ -296,6 +297,29 @@ function* removePost(action){
 function* watchRemovePost(){
   yield takeLatest(REMOVE_POST_REQUEST, removePost);
 }
+//
+function loadPostAPI(postId){
+  return axios.get(`/post/${postId}/`)
+}
+function* loadPost(action){
+  try {
+    const result = yield call(loadPostAPI, action.data)
+    yield put({
+      type:LOAD_POST_SUCCESS,
+      data:result.data
+    });
+  } catch (e) {
+    console.error(e);
+    yield put({
+      type:LOAD_POST_FAILURE,
+      error:e
+    })
+    alert(e.response.data)
+  }
+}
+function* watchLoadPost(){
+  yield takeLatest(LOAD_POST_REQUEST, loadPost);
+}
 
 export default function* userSaga(){
   yield all([
@@ -310,5 +334,6 @@ export default function* userSaga(){
     fork(watchUnLikePost),
     fork(watchRetweet),
     fork(watchRemovePost),
+    fork(watchLoadPost),
   ])
 }

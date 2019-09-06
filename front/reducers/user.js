@@ -221,6 +221,7 @@ const reducer = (state = initialState, action) => {
     case LOAD_FOLLOWERS_REQUEST:{
       return{
         ...state,
+        followerList : !action.offset ? [] : state.followerList,
         hasMoreFollower:action.offset ? state.hasMoreFollower : true,
       }
     }
@@ -239,13 +240,14 @@ const reducer = (state = initialState, action) => {
     case LOAD_FOLLOWINGS_REQUEST:{
       return{
         ...state,
+        followingList: state.followingList.length === 0 ? [] : state.followingList,
         hasMoreFollowing:action.offset ? state.hasMoreFollowing : true,
       }
     }
     case LOAD_FOLLOWINGS_SUCCESS:{
       return{
         ...state,
-        followingList:action.offset === 0 ? action.data :[...state.followingList,...action.data],
+        followingList:state.followingList.length <= 3 ? action.data : [...state.followingList, ...action.data],
         hasMoreFollowing : action.data.length === 3,
       }
     }
