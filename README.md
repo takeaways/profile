@@ -139,5 +139,7 @@ const user = {
 +6) mysql_secure_installation
 +7) mysql -uroot -p
 8) git clone
+
+도메인 네임서버 수정-> aws로 권한 넘기기
 </code>
 </pre>
