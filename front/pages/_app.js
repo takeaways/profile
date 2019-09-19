@@ -29,11 +29,11 @@ const Main = ({Component, store, pageProps}) => {
           }, {
             'http-equiv': 'X-UA-Compatible', content: 'IE=edge',
           }, {
-            name: 'description', content: '제로초의 NodeBird SNS',
+            name: 'description', content: 'Geonil Profile',
           }, {
-            name: 'og:title', content: 'NodeBird',
+            name: 'og:title', content: 'Geonil Profile',
           }, {
-            name: 'og:description', content: '제로초의 NodeBird SNS',
+            name: 'og:description', content: 'Geonil Profile',
           }, {
             property: 'og:type', content: 'website',
           }]}
